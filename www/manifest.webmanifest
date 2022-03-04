@@ -4,15 +4,11 @@
     "description" : "Site web qui te dit quand c'est chaud chaud chaud",
     "lang" : "fr",
     "display" : "standalone",
-    "start_url" : "https://hothothot.ozeliurs.com/",
+    "start_url" : "https://hothothot.ozeliurs.com",
     "icons" : [
         {
-            "src" : "icons/littleWebIcon.png",
-            "sizes" : "48x48"
-        },
-        {
         "src": "icons/webIcon.png",
-        "sizes" : "72x72 96x96 128x128 256x256"
+        "sizes" : "512x512"
         }
     ],
     "background_color" : "black"
