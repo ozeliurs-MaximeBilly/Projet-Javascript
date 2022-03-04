@@ -6,14 +6,13 @@ on:
       - main
 
 jobs:
-  build:
-
+  deployment:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v1
 
-    - name: Executing remote command
+    - name: Delete contents of server folder
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
