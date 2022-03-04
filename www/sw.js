@@ -1,8 +1,8 @@
 self.addEventListener('install', (e) => {
     e.waitUntil(
         caches.open('my-custom-pwa').then((cache) => cache.addAll([
-            "../index.html",
-            "script.js",
+            "/index.html",
+            "/js/script.js"
         ])
     )
 )
