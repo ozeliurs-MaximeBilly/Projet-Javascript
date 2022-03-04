@@ -63,9 +63,46 @@ function getData() {
         },
         "temp_int":{
             "timestamp": Date.now(),
-            "value": getRandomInt(10, 30)
+            "value": getRandomInt(-50, 60)
         }
     }
+}
+
+function updateTempLabels(data) {
+    if (data["temp_ext"]["value"] > 35){
+        document.getElementById("temp-ext").getElementsByTagName("h5")[1].innerHTML = "Hot Hot Hot !";
+        document.getElementById("temp-ext").getElementsByTagName("h5")[1].style.display = "flex";
+    }
+    else if (data["temp_ext"]["value"] < 0) {
+        document.getElementById("temp-ext").getElementsByTagName("h5")[1].innerHTML = "Banquise en vue !";
+        document.getElementById("temp-ext").getElementsByTagName("h5")[1].style.display = "flex";
+    }
+    else {
+        document.getElementById("temp-ext").getElementsByTagName("h5")[1].innerHTML = "";
+        document.getElementById("temp-ext").getElementsByTagName("h5")[1].style.display = "none";
+    }
+
+    if (data["temp_int"]["value"] > 22 && data["temp_int"]["value"] <= 50){
+        document.getElementById("temp-int").getElementsByTagName("h5")[1].innerHTML = "Baissez le chauffage !";
+        document.getElementById("temp-int").getElementsByTagName("h5")[1].style.display = "flex";
+    }
+    else if (data["temp_int"]["value"] > 50){
+        document.getElementById("temp-int").getElementsByTagName("h5")[1].innerHTML = "Appelez les pompiers ou arrêtez votre barbecue !";
+        document.getElementById("temp-int").getElementsByTagName("h5")[1].style.display = "flex";
+    }
+    else if (data["temp_int"]["value"] < 12 && data["temp_int"]["value"] >= 0){
+        document.getElementById("temp-int").getElementsByTagName("h5")[1].innerHTML = "Montez le chauffage ou mettez un gros pull  !";
+        document.getElementById("temp-int").getElementsByTagName("h5")[1].style.display = "flex";
+    }
+    else if (data["temp_int"]["value"] < 0){
+        document.getElementById("temp-int").getElementsByTagName("h5")[1].innerHTML = "Canalisations gelées, appelez SOS plombier et mettez un bonnet !";
+        document.getElementById("temp-int").getElementsByTagName("h5")[1].style.display = "flex";
+    }
+    else {
+        document.getElementById("temp-int").getElementsByTagName("h5")[1].innerHTML = "";
+        document.getElementById("temp-int").getElementsByTagName("h5")[1].style.display = "none";
+    }
+
 }
 
 function update(event) {
@@ -77,6 +114,8 @@ function update(event) {
     UnCharted.data.labels = hist["time"]
     UnCharted.data.datasets[0].data = hist["temp_int"];
     UnCharted.data.datasets[1].data = hist["temp_ext"];
+
+    updateTempLabels(data);
 
     document.getElementById("temp-ext").getElementsByTagName("h1")[0].innerHTML = data["temp_ext"]["value"] + "°C";
     document.getElementById("temp-ext").getElementsByTagName("b")[0].innerHTML = Math.min.apply(Math, hist["temp_ext"]) + "°C";
