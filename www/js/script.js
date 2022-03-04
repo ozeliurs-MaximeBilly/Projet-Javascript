@@ -59,6 +59,17 @@ function affNow() {
     document.getElementById("hist").classList = "button";
 }
 
+function changeNotif() {
+    if (!('Notification' in window)) {
+        console.log("Ce navigateur ne prend pas en charge les notifications.");
+    }
+    else if (Notification.permission !== "granted") {
+        Notification.requestPermission();
+
+        //document.getElementById("notif").style.display = "none";
+    }
+}
+
 function getRandomInt(min, max) {
     if (min > max) {return false}
     return Math.floor(Math.random() * (max-min) + min);
@@ -127,7 +138,7 @@ function update(event) {
     document.getElementById("temp-ext").getElementsByTagName("h1")[0].innerHTML = data["temp_ext"]["value"] + "°C";
     document.getElementById("temp-ext").getElementsByTagName("b")[0].innerHTML = Math.min.apply(Math, hist["temp_ext"]) + "°C";
     document.getElementById("temp-ext").getElementsByTagName("b")[1].innerHTML = Math.max.apply(Math, hist["temp_ext"]) + "°C";
-    
+
 
     Math.max(hist["temp_int"])
     Math.min(hist["temp_int"])
@@ -140,3 +151,4 @@ function update(event) {
 
 document.getElementById("now").addEventListener("click", affNow);
 document.getElementById("hist").addEventListener("click", affHist);
+document.getElementById("notif").addEventListener("click", changeNotif);
