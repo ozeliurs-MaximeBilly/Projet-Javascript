@@ -4,7 +4,7 @@
     "description" : "Site web qui te dit quand c'est chaud chaud chaud",
     "lang" : "fr",
     "display" : "standalone",
-    "start_url" : "https://hothothot.ozeliurs.com/",
+    "start_url" : "https://hothothot.ozeliurs.com",
     "icons" : [
         {
         "src": "icons/webIcon.png",
