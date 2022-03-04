@@ -43,11 +43,15 @@ var hist = {"time":[] ,"temp_ext":[], "temp_int":[]}
 function affHist() {
     document.getElementById("now-container").style.display = 'none';
     document.getElementById("hist-container").style.display = 'flex';
+    document.getElementById("hist").classList = "button primary";
+    document.getElementById("now").classList = "button";
 }
 
 function affNow() {
     document.getElementById("now-container").style.display = 'flex';
     document.getElementById("hist-container").style.display = 'none';
+    document.getElementById("now").classList = "button primary";
+    document.getElementById("hist").classList = "button";
 }
 
 function getRandomInt(min, max) {
@@ -71,10 +75,12 @@ function getData() {
 function updateTempLabels(data) {
     if (data["temp_ext"]["value"] > 35){
         document.getElementById("temp-ext").getElementsByTagName("h5")[1].innerHTML = "Hot Hot Hot !";
+        document.getElementById("temp-ext").getElementsByTagName("h5")[1].style.color = "red";
         document.getElementById("temp-ext").getElementsByTagName("h5")[1].style.display = "flex";
     }
     else if (data["temp_ext"]["value"] < 0) {
         document.getElementById("temp-ext").getElementsByTagName("h5")[1].innerHTML = "Banquise en vue !";
+        document.getElementById("temp-ext").getElementsByTagName("h5")[1].style.color = "blue";
         document.getElementById("temp-ext").getElementsByTagName("h5")[1].style.display = "flex";
     }
     else {
@@ -84,18 +90,22 @@ function updateTempLabels(data) {
 
     if (data["temp_int"]["value"] > 22 && data["temp_int"]["value"] <= 50){
         document.getElementById("temp-int").getElementsByTagName("h5")[1].innerHTML = "Baissez le chauffage !";
+        document.getElementById("temp-int").getElementsByTagName("h5")[1].style.color = "orange";
         document.getElementById("temp-int").getElementsByTagName("h5")[1].style.display = "flex";
     }
     else if (data["temp_int"]["value"] > 50){
         document.getElementById("temp-int").getElementsByTagName("h5")[1].innerHTML = "Appelez les pompiers ou arrêtez votre barbecue !";
+        document.getElementById("temp-int").getElementsByTagName("h5")[1].style.color = "red";
         document.getElementById("temp-int").getElementsByTagName("h5")[1].style.display = "flex";
     }
     else if (data["temp_int"]["value"] < 12 && data["temp_int"]["value"] >= 0){
         document.getElementById("temp-int").getElementsByTagName("h5")[1].innerHTML = "Montez le chauffage ou mettez un gros pull  !";
+        document.getElementById("temp-int").getElementsByTagName("h5")[1].style.color = "cyan";
         document.getElementById("temp-int").getElementsByTagName("h5")[1].style.display = "flex";
     }
     else if (data["temp_int"]["value"] < 0){
         document.getElementById("temp-int").getElementsByTagName("h5")[1].innerHTML = "Canalisations gelées, appelez SOS plombier et mettez un bonnet !";
+        document.getElementById("temp-int").getElementsByTagName("h5")[1].style.color = "blue";
         document.getElementById("temp-int").getElementsByTagName("h5")[1].style.display = "flex";
     }
     else {
