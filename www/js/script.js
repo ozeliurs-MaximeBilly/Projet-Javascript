@@ -1,3 +1,8 @@
+if ('serviceWorker' in navigator) {
+    serviceWorker.register('sw.js', {scope: "."})
+    .then(() => { console.log("Service Worker Registered"); });
+}
+
 setInterval(update, 1000);
 
 const socket = new WebSocket('wss://ws.hothothot.dog:9502');
