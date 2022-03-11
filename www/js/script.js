@@ -3,12 +3,13 @@ if ('serviceWorker' in navigator) {
     .then(() => { console.log("Service Worker Registered"); });
 }
 
-setInterval(update, 1000);
+setInterval(update, 5000);
 
 let hist = {}
-let wss = true;
+let wss = false;
 let no_data_detect = false; // see if at least one message from websocket has arrived
 let no_data_timeout = 0; // count how many updates have run with no messages from websocket
+let chart_length = 50;
 
 // utility functions
 function getRandomInt(min, max) {
@@ -223,6 +224,8 @@ function fetchAPIandUpdate() {
 }
 
 function updateDisplay(data) {
+    if (data === "") { return }
+
     data.capteurs.forEach(capt => {
 
         // Ajout d'element si pas de element existant
@@ -249,6 +252,8 @@ function updateDisplay(data) {
             hist[capt.Nom] = []
         }
         hist[capt.Nom].push(capt.Valeur)
+
+        localStorage.setItem("hist", JSON.stringify(hist))
         
         // Population des elements
         document.getElementById(capt.Nom).getElementsByTagName("h1")[0].innerHTML = capt.Valeur + "°C";
@@ -263,7 +268,7 @@ function updateDisplay(data) {
         // Add label if missing
         if (!UnCharted.data.labels.includes(capt.Timestamp)) {
             UnCharted.data.labels.push(capt.Timestamp)
-            if (UnCharted.data.labels.length > 10) {
+            if (UnCharted.data.labels.length > chart_length) {
                 UnCharted.data.labels.shift()
             }
         }
@@ -293,7 +298,7 @@ function updateDisplay(data) {
             if (line.label === capt.Nom) {
                 line.data.push(capt.Valeur)
                 console.log(line)
-                if (line.data.length > 10) {
+                if (line.data.length > chart_length) {
                     line.data.shift()
                 }
             }
@@ -321,6 +326,13 @@ function update(event) { // called every 10 seconds checks if wss fails
     
     //var data = getData(); // Fake data
     //updateDisplay(data);
+}
+
+// Get data from localstorage
+local_hist = localStorage.getItem("hist")
+if (local_hist) {
+    console.log("Read history from localstorage !")
+    hist = JSON.parse(local_hist)
 }
 
 update()
