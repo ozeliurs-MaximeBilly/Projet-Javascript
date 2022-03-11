@@ -4,6 +4,43 @@
     <meta charset="UTF-8">
     <title>Projet JS</title>
     <link rel="stylesheet" href="css/style.css">
+    <script>
+        var tid = setInterval(update, 100);
+        var run = false;
+
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * max);
+        }
+
+        function margaillan(size) {
+            g = ["ui", "a", "ai", "ea", "ou", "i", "an", "ue", "oui", "e"]
+            l = ["", "l"]
+            // mar {g{ui, a, ou, i, an, ai, ue}, {ll,l}} an
+            if (size%2 != 0) {size += 1}
+            output = "Mar"
+            for (i=0; i<size; ++i) {
+                if (i%2 == 0) {
+                    output += "g";
+                    output += g[Math.floor(Math.random() * g.length)];
+                } else {
+                    output += "l";
+                    output += l[Math.floor(Math.random() * l.length)]
+                }
+                console.log(i);
+            }
+            output += "an";
+            return output;
+        }
+
+
+        function update() {
+            if (run) {
+                marg = margaillan(getRandomInt(9)+1);
+                if (marg === "Margaillan") {run=false}
+                document.getElementById("marg").innerHTML = marg;
+            }
+        }
+    </script>
 </head>
 <body>
 <nav class="nav">
@@ -63,9 +100,9 @@
             et des améliorations.</p>
     </div>
     <br>
-    <div class="card">
+    <div class="card" onclick="run = true">
         <header>
-            <h4 class="text-error">Kylian Margaillan</h4>
+            <h4 class="text-error">Kylian <span id="marg">Margaillan</span></h4>
         </header>
         <p>Kylian Margaillan s'est occupé de la page de documentation,
          plus de quelques dingueries qui arrivent.
