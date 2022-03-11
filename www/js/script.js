@@ -3,13 +3,12 @@ if ('serviceWorker' in navigator) {
     .then(() => { console.log("Service Worker Registered"); });
 }
 
-setInterval(update, 10000);
+setInterval(update, 1000);
 
-hist = {}
-charthist = {}
-
-no_data_detect = false // see if at least one message from websocket has arrived
-no_data_timeout = 0 // count how many updates have run with no messages from websocket
+let hist = {}
+let wss = true;
+let no_data_detect = false; // see if at least one message from websocket has arrived
+let no_data_timeout = 0; // count how many updates have run with no messages from websocket
 
 // utility functions
 function getRandomInt(min, max) {
@@ -128,9 +127,11 @@ socket.onopen = function (event) {
 }
 
 socket.onmessage = function(event) {
-    updateDisplay(event.data)
-    no_data_detect == true
-    console.log(event.data)
+    if (wss){
+        updateDisplay(event.data)
+        no_data_detect = true
+        console.log(event.data)
+    }
 }
 
 // Hide/Visibility Buttons
@@ -164,6 +165,16 @@ document.getElementById("notif").addEventListener("click", event => {
                 })
             }
         })
+    }
+})
+
+document.getElementById("temp-type").addEventListener("click", event => {
+    if (document.getElementById("temp-type").innerHTML === "WSS") {
+        document.getElementById("temp-type").innerHTML = "FETCH";
+        wss = false;
+    } else {
+        document.getElementById("temp-type").innerHTML = "WSS";
+        wss = true;
     }
 })
 
@@ -252,12 +263,15 @@ function updateDisplay(data) {
         // Add label if missing
         if (!UnCharted.data.labels.includes(capt.Timestamp)) {
             UnCharted.data.labels.push(capt.Timestamp)
+            if (UnCharted.data.labels.length > 10) {
+                UnCharted.data.labels.shift()
+            }
         }
 
         // Check if Add line for new sensor
         add_line = true
         UnCharted.data.datasets.forEach(line => {
-            if (line.label == capt.Nom) {
+            if (line.label === capt.Nom) {
                 add_line = false
             }
         });
@@ -271,12 +285,17 @@ function updateDisplay(data) {
                 borderColor: getRandomColor(), // Get random Color
                 tension: 0.1
             })
+
         }
 
         // add data to the line
         UnCharted.data.datasets.forEach(line => {
-            if (line.label == capt.Nom) {
+            if (line.label === capt.Nom) {
                 line.data.push(capt.Valeur)
+                console.log(line)
+                if (line.data.length > 10) {
+                    line.data.shift()
+                }
             }
         });
         
@@ -298,10 +317,10 @@ function update(event) { // called every 10 seconds checks if wss fails
     // }
 
     // if wss fails get back with fetch
-    // fetchAPIandUpdate();
+    if (!wss) {fetchAPIandUpdate()}
     
-    var data = getData(); // Fake data
-    updateDisplay(data);
+    //var data = getData(); // Fake data
+    //updateDisplay(data);
 }
 
 update()
