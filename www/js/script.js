@@ -3,7 +3,7 @@ if ('serviceWorker' in navigator) {
     .then(() => { console.log("Service Worker Registered"); });
 }
 
-setInterval(update, 1000);
+setInterval(update, 10000);
 
 let hist = {}
 let wss = false;
@@ -309,18 +309,7 @@ function updateDisplay(data) {
 }
 
 function update(event) { // called every 10 seconds checks if wss fails
-    
-    // if (no_data_timeout < 5) { // bypass wss if not responding
-    //     if (no_data_detect == 0) {
-    //         no_data_timeout += 1
-    //     }
 
-    //     if (socket.readyState == 1) {
-    //         return
-    //     }
-    // }
-
-    // if wss fails get back with fetch
     if (!wss) {fetchAPIandUpdate()}
     
     //var data = getData(); // Fake data
