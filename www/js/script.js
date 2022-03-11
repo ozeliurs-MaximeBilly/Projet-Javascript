@@ -3,13 +3,13 @@ if ('serviceWorker' in navigator) {
     .then(() => { console.log("Service Worker Registered"); });
 }
 
-setInterval(update, 5000);
+setInterval(update, 1000);
 
 let hist = {}
 let wss = false;
 let no_data_detect = false; // see if at least one message from websocket has arrived
 let no_data_timeout = 0; // count how many updates have run with no messages from websocket
-let chart_length = 50;
+let chart_length = 20;
 
 // utility functions
 function getRandomInt(min, max) {
@@ -290,7 +290,6 @@ function updateDisplay(data) {
                 borderColor: getRandomColor(), // Get random Color
                 tension: 0.1
             })
-
         }
 
         // add data to the line
@@ -306,7 +305,7 @@ function updateDisplay(data) {
         
     });
 
-    UnCharted.update()
+    UnCharted.update('resize')
 }
 
 function update(event) { // called every 10 seconds checks if wss fails
@@ -328,11 +327,13 @@ function update(event) { // called every 10 seconds checks if wss fails
     //updateDisplay(data);
 }
 
-// Get data from localstorage
-local_hist = localStorage.getItem("hist")
-if (local_hist) {
-    console.log("Read history from localstorage !")
-    hist = JSON.parse(local_hist)
-}
+document.addEventListener('DOMContentLoaded', event => {
+    // Get data from localstorage
+    local_hist = localStorage.getItem("hist")
+    if (local_hist) {
+        console.log("Read history from localstorage !")
+        hist = JSON.parse(local_hist)
+    }
 
-update()
+    update()
+})
