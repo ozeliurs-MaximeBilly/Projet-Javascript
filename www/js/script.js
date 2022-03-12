@@ -1,3 +1,10 @@
+import ChartSubscriber from '/js/chart-subsciber-class.js';
+import LabelsSubscriber from '/js/labels-subsciber-class.js';
+import NowSubscriber from '/js/now-subsciber-class.js';
+import Subscriber from '/js/subsciber-class.js';
+import Publisher from '/js/publisher-class.js';
+
+
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js')
     .then(() => { console.log("Service Worker Registered"); });
@@ -67,56 +74,6 @@ function getRandomColor() {
         "#7f8c8d"
     ]
     return colors[Math.floor(Math.random() * colors.length)]
-}
-
-
-function updateTempLabels(data) {
-    
-    if (data.Nom == "exterieur") {
-        if (data.Valeur > 35){
-            document.getElementById("exterieur").getElementsByTagName("h5")[1].style.visibility = "visible";
-            document.getElementById("exterieur").getElementsByTagName("h5")[1].innerHTML = "Hot Hot Hot !";
-            notify("Hot Hot Hot !")
-            document.getElementById("exterieur").getElementsByTagName("h5")[1].style.color = "red";
-        } else if (data.Valeur < 0) {
-            document.getElementById("exterieur").getElementsByTagName("h5")[1].style.visibility = "visible";
-            document.getElementById("exterieur").getElementsByTagName("h5")[1].innerHTML = "Banquise en vue !";
-            notify("Banquise en vue !")
-            document.getElementById("exterieur").getElementsByTagName("h5")[1].style.color = "blue";
-        } else {
-            document.getElementById("exterieur").getElementsByTagName("h5")[1].style.visibility = "hidden";
-            // document.getElementById("exterieur").getElementsByTagName("h5")[1].innerHTML = "";
-        }
-    }
-
-    if (data.Nom == "interieur") {
-        if (data.Valeur > 22 && data.Valeur <= 50) {
-            document.getElementById("interieur").getElementsByTagName("h5")[1].style.visibility = "visible";
-            document.getElementById("interieur").getElementsByTagName("h5")[1].innerHTML = "Baissez le chauffage !";
-            notify("Baissez le chauffage !")
-            document.getElementById("interieur").getElementsByTagName("h5")[1].style.color = "orange";
-        }
-        else if (data.Valeur > 50) {
-            document.getElementById("interieur").getElementsByTagName("h5")[1].style.visibility = "visible";
-            document.getElementById("interieur").getElementsByTagName("h5")[1].innerHTML = "Appelez les pompiers ou arrêtez votre barbecue !";
-            notify("Appelez les pompiers ou arrêtez votre barbecue !")
-            document.getElementById("interieur").getElementsByTagName("h5")[1].style.color = "red";
-        } else if (data.Valeur < 12 && data.Valeur >= 0) {
-            document.getElementById("interieur").getElementsByTagName("h5")[1].style.visibility = "visible";
-            document.getElementById("interieur").getElementsByTagName("h5")[1].innerHTML = "Montez le chauffage ou mettez un gros pull  !";
-            notify("Montez le chauffage ou mettez un gros pull  !")
-            document.getElementById("interieur").getElementsByTagName("h5")[1].style.color = "cyan";
-        } else if (data.Valeur < 0) {
-            document.getElementById("interieur").getElementsByTagName("h5")[1].style.visibility = "visible";
-            document.getElementById("interieur").getElementsByTagName("h5")[1].innerHTML = "Canalisations gelées, appelez SOS plombier et mettez un bonnet !";
-            notify("Canalisations gelées, appelez SOS plombier et mettez un bonnet !")
-            document.getElementById("interieur").getElementsByTagName("h5")[1].style.color = "blue";
-        }
-        else {
-            document.getElementById("interieur").getElementsByTagName("h5")[1].style.visibility = "hidden";
-            // document.getElementById("interieur").getElementsByTagName("h5")[1].innerHTML = "";
-        }
-    }
 }
 
 
@@ -223,91 +180,6 @@ function fetchAPIandUpdate() {
     .catch(error => console.log(error))
 }
 
-function updateDisplay(data) {
-    if (data === "") { return }
-
-    data.capteurs.forEach(capt => {
-
-        // Ajout d'element si pas de element existant
-        if (document.getElementById(capt.Nom) == null) {
-            if (capt.type == "Thermique") {
-                console.log("Ajout d'un capt thermique")
-                template = document.getElementById("temp-template")
-                clone = document.importNode(template.content, true)
-            } else {
-                console.log("Ajout d'un capt basique")
-                template = document.getElementById("basic-template")
-                clone = document.importNode(template.content, true)
-            }
-            
-            clone.firstElementChild.setAttribute("id", capt.Nom)
-            clone.getElementById("title").innerHTML = capt.Nom;
-
-            var container = document.getElementById("now-container")
-            container.appendChild(clone)
-        }
-
-        // Historique
-        if (hist[capt.Nom] == undefined) {
-            hist[capt.Nom] = []
-        }
-        hist[capt.Nom].push(capt.Valeur)
-
-        localStorage.setItem("hist", JSON.stringify(hist))
-        
-        // Population des elements
-        document.getElementById(capt.Nom).getElementsByTagName("h1")[0].innerHTML = capt.Valeur + "°C";
-        document.getElementById(capt.Nom).getElementsByTagName("b")[0].innerHTML = Math.min.apply(Math, hist[capt.Nom]) + "°C";
-        document.getElementById(capt.Nom).getElementsByTagName("b")[1].innerHTML = Math.max.apply(Math, hist[capt.Nom]) + "°C";
-
-        // Add funny notes to the temperatures
-        updateTempLabels(capt)
-
-        // Update Chart
-
-        // Add label if missing
-        if (!UnCharted.data.labels.includes(capt.Timestamp)) {
-            UnCharted.data.labels.push(capt.Timestamp)
-            if (UnCharted.data.labels.length > chart_length) {
-                UnCharted.data.labels.shift()
-            }
-        }
-
-        // Check if Add line for new sensor
-        add_line = true
-        UnCharted.data.datasets.forEach(line => {
-            if (line.label === capt.Nom) {
-                add_line = false
-            }
-        });
-
-        // If line doesent exist create it
-        if (add_line) {
-            UnCharted.data.datasets.push({
-                label: capt.Nom,
-                data: [],
-                fill: false,
-                borderColor: getRandomColor(), // Get random Color
-                tension: 0.1
-            })
-        }
-
-        // add data to the line
-        UnCharted.data.datasets.forEach(line => {
-            if (line.label === capt.Nom) {
-                line.data.push(capt.Valeur)
-                console.log(line)
-                if (line.data.length > chart_length) {
-                    line.data.shift()
-                }
-            }
-        });
-        
-    });
-
-    UnCharted.update('resize')
-}
-
 function update(event) { // called every 10 seconds checks if wss fails
 
     if (!wss) {fetchAPIandUpdate()}
@@ -323,6 +195,14 @@ document.addEventListener('DOMContentLoaded', event => {
         console.log("Read history from localstorage !")
         hist = JSON.parse(local_hist)
     }
+
+    let chart = new ChartSubscriber();
+    let now = new NowSubscriber();
+    let labels = new LabelsSubscriber();
+    let publisher = new Publisher();
+    publisher.subscribe(chart)
+    publisher.subscribe(now)
+    publisher.subscribe(labels)
 
     update()
 })
