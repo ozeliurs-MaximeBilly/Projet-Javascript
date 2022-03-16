@@ -38,7 +38,7 @@
     <br>
     <div class="card" id="infoCompte" style="display: none;">
         <h4 class="text-success">Information du compte : </h4>
-        <img id="pfp" class="is-rounded" src="/img/raccoon-1.jpg">
+        <img id="pfp" class="is-rounded" src="/img/raccoon-1.jpg" style="max-width: 100px; max-height: 100px;">
         <p>Nom : Constantimp</p>
         <p>Prénom : Crevette</p>
         <p>Compte créé le : 19/04/2021</p>
@@ -51,7 +51,7 @@
             document.getElementById("boutonConnexion").classList = "button error";
             document.getElementById("isConnected").innerHTML = "Connecté";
             document.getElementById("isConnected").classList = "text-success";
-            document.getElementById("pfp").src = "raccoon-"+Math.floor(Math.random() * 200)+".jpg";
+            document.getElementById("pfp").src = "/img/raccoon-"+Math.floor(Math.random() * 200)+".jpg";
             document.getElementById("infoCompte").style.display = "block";
         }
         else{
