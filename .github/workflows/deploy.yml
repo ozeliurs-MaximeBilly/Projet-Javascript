@@ -20,7 +20,7 @@ jobs:
         PORT: ${{ secrets.PORT }}
         KEY: ${{ secrets.SSHKEY }}
       with:
-        source: "www/*"
+        source: "./*"
         target: "/tmp/hothothot"
 
     - name: Delete contents of server folder
@@ -30,4 +30,4 @@ jobs:
         USERNAME: ${{ secrets.USER }}
         PORT: ${{ secrets.PORT }}
         KEY: ${{ secrets.SSHKEY }}
-        script: sudo rm -r /var/www/hothothot/* && sudo cp -r /tmp/hothothot/www/* /var/www/hothothot && sudo rm -r /tmp/hothothot
+        script: sudo rm -r /var/www/hothothot/* && sudo cp -r /tmp/hothothot/www/* /var/www/hothothot && sudo rm -r /tmp/hothothot && sudo rm /etc/nginx/sites-enabled/hothothot.conf && sudo mv /tmp/hothothot/hothothot.conf /etc/nginx/sites-enabled/hothothot.conf && sudo nginx -t && sudo systemctl reload nginx
