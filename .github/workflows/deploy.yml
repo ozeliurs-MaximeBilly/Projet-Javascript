@@ -32,9 +32,6 @@ jobs:
         KEY: ${{ secrets.SSHKEY }}
         script: sudo rm -r /var/www/hothothot/* && sudo cp -r /tmp/hothothot/www/* /var/www/hothothot && sudo rm -r /tmp/hothothot
 
-  lighthouse-check:
-    runs-on: ubuntu-latest
-    steps:
     - uses: actions/checkout@master
     - run: mkdir /tmp/artifacts
     - name: Run Lighthouse
