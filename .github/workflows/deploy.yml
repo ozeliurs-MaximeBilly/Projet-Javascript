@@ -31,3 +31,19 @@ jobs:
         PORT: ${{ secrets.PORT }}
         KEY: ${{ secrets.SSHKEY }}
         script: sudo rm -r /var/www/hothothot/* && sudo cp -r /tmp/hothothot/www/* /var/www/hothothot && sudo rm -r /tmp/hothothot
+
+  lighthouse-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - run: mkdir /tmp/artifacts
+    - name: Run Lighthouse
+      uses: foo-software/lighthouse-check-action@master
+      with:
+        outputDirectory: /tmp/artifacts
+        urls: 'https://hothothot.ozeliurs.com/,https://hothothot.ozeliurs.com/doc.html,https://hothothot.ozeliurs.com/espaceCompte.html'
+    - name: Upload artifacts
+      uses: actions/upload-artifact@master
+      with:
+        name: Lighthouse reports
+        path: /tmp/artifacts
