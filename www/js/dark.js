@@ -1,3 +1,4 @@
-if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-       document.body.classList.add("dark");
-   }
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+    const theme = event.matches ? "dark" : "";
+     document.body.classList = theme;
+});
