@@ -23,11 +23,56 @@ jobs:
         source: "./*"
         target: "/tmp/hothothot"
 
-    - name: Delete contents of server folder
+    - name: Delete contents of server folder before installation
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         USERNAME: ${{ secrets.USER }}
         PORT: ${{ secrets.PORT }}
         KEY: ${{ secrets.SSHKEY }}
-        script: sudo rm -r /var/www/hothothot/* && sudo cp -r /tmp/hothothot/www/* /var/www/hothothot && sudo touch /etc/nginx/sites-enabled/hothothot.conf && sudo rm /etc/nginx/sites-enabled/hothothot.conf && sudo mv /tmp/hothothot/hothothot.conf /etc/nginx/sites-enabled/hothothot.conf && sudo nginx -t && sudo systemctl reload nginx && sudo rm -r /tmp/hothothot
+        script: sudo touch /var/www/hothothot/tmp && sudo rm -r /var/www/hothothot/*
+
+    - name: Copy website contents
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        USERNAME: ${{ secrets.USER }}
+        PORT: ${{ secrets.PORT }}
+        KEY: ${{ secrets.SSHKEY }}
+        script: sudo cp -r /tmp/hothothot/www/* /var/www/hothothot
+        
+    - name: Remove website config
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        USERNAME: ${{ secrets.USER }}
+        PORT: ${{ secrets.PORT }}
+        KEY: ${{ secrets.SSHKEY }}
+        script: sudo touch /etc/nginx/sites-enabled/hothothot.conf && sudo rm /etc/nginx/sites-enabled/hothothot.conf 
+  
+    - name: Copy new config
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        USERNAME: ${{ secrets.USER }}
+        PORT: ${{ secrets.PORT }}
+        KEY: ${{ secrets.SSHKEY }}
+        script: sudo mv /tmp/hothothot/hothothot.conf /etc/nginx/sites-enabled/hothothot.conf
+  
+    - name: Reload webserver
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        USERNAME: ${{ secrets.USER }}
+        PORT: ${{ secrets.PORT }}
+        KEY: ${{ secrets.SSHKEY }}
+        script: sudo nginx -t && sudo systemctl reload nginx
+        
+    - name: Cleanup
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        USERNAME: ${{ secrets.USER }}
+        PORT: ${{ secrets.PORT }}
+        KEY: ${{ secrets.SSHKEY }}
+        script: sudo rm -r /tmp/hothothot
