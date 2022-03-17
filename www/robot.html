@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Are you a robot ?</title>
+    <link rel="icon" type="image/png" href="/icons/webIcon.png">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+    <div class="card" style="padding: 20px;">
+        <h1>Select the dog</h1>
+        <div style="display: flex; justify-content: space-around;">
+            <img id="dog1" src="/img/" style="padding: 15px; border-radius: 5px; width: 100px; height: 100px;">
+            <img id="dog2" src="/img/" style="padding: 15px; border-radius: 5px; width: 100px; height: 100px;">
+        </div>
+        <a href="#" id="validate">Valider</a>
+    </div>
+    <script>
+        document.getElementById("dog1").addEventListener("click", event => {
+            document.getElementById("dog1").classList = "bg-primary";
+            document.getElementById("dog2").classList = "";
+            selected = 0
+        })
+
+        document.getElementById("dog2").addEventListener("click", event => {
+            document.getElementById("dog2").classList = "bg-primary";
+            document.getElementById("dog1").classList = "";
+            selected = 1
+        })
+
+        document.getElementById("validate").addEventListener("click", validate)
+
+        a8 = Math.floor(Math.random() * 7) + 1
+        a2 = Math.floor(Math.random() * 2)
+        dataset = [["chihuahua", "muffin"], ["dog", "bagel"]][Math.floor(Math.random() * 2)]
+        if (a2 == 1) {
+            document.getElementById("dog1").src = "/img/" + dataset[0] + "-" + a8 + ".jpg"
+            document.getElementById("dog2").src = "/img/" + dataset[1] + "-" + a8 + ".jpg"
+            valid = 0
+        } else {
+            document.getElementById("dog1").src = "/img/" + dataset[1] + "-" + a8 + ".jpg"
+            document.getElementById("dog2").src = "/img/" + dataset[0] + "-" + a8 + ".jpg"
+            valid = 1
+        }
+
+        function validate(event) {
+            if (selected === valid){
+                console.log("Valid Choice !!")
+                localStorage.setItem("robot", "true")
+                window.location.replace("/");
+            }
+        }
+    </script>
+</body>
+</html>
