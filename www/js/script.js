@@ -98,7 +98,7 @@ class graph {
     UnCharted;
 
     constructor() {
-        UnCharted = new Chart(
+        this.UnCharted = new Chart(
             document.getElementById("UnCharted").getContext("2d"), {
             type: "line",
             data: {
@@ -123,7 +123,7 @@ class graph {
 
         // Check if we have to add new line for new sensor
         let add_line = true;
-        UnCharted.data.datasets.forEach((line) => {
+        this.UnCharted.data.datasets.forEach((line) => {
             if (line.label === label) {
                 add_line = false;
             }
@@ -131,7 +131,7 @@ class graph {
 
         // If line doesent exist create it
         if (add_line) {
-            UnCharted.data.datasets.push({
+            this.UnCharted.data.datasets.push({
                 label: label,
                 data: [],
                 fill: false,
@@ -141,7 +141,7 @@ class graph {
         }
 
         // add data to the line
-        UnCharted.data.datasets.forEach((line) => {
+        this.UnCharted.data.datasets.forEach((line) => {
             if (line.label === label) {
                 line.data.push({x: x_data, y: y_data})
 
@@ -153,7 +153,7 @@ class graph {
     } // addData()
 
     update() {
-        UnCharted.update("resize")
+        this.UnChartedUnCharted.update("resize")
     }
 
     getChart() {
