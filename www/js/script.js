@@ -155,6 +155,10 @@ class graph {
     update() {
         UnCharted.update("resize")
     }
+
+    getChart() {
+        return this.UnCharted;
+    }
 }
 
 
