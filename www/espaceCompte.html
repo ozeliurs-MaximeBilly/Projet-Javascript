@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Projet JS</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<nav class="nav">
+    <div class="nav-left">
+        <div class="tabs">
+            <a href="/">Accueil</a>
+            <a href="/doc.html">Documentation</a>
+        </div>
+    </div>
+    <div class="nav-center">
+        <a href="/" class="brand">🥵 HotHotHot 🥶</a>
+    </div>
+    <div class="nav-right">
+        <a class="active" href="/espaceCompte.html">Espace utilisateur</a>
+    </div>
+</nav>
+
+<main class="container">
+    <br>
+    <div class="card">
+        <div class="text-center">
+                <h1>Espace utilisateur</h1>
+            <a class="text-green">Gestion de compte</a>
+        </div>
+    </div>
+    <br> <br>
+    <div class="card">
+        <h4 class="text-success">Connexion/Déconnexion</h4>
+        <p>Votre statut actuel est : <a id="isConnected">Déconnecté</a></p>
+        <a class="button primary" id="boutonConnexion" >Se connecter</a>
+    </div>
+    <br>
+    <div class="card" id="infoCompte" style="display: none;">
+        <h4 class="text-success">Information du compte : </h4>
+        <img id="pfp" class="is-rounded" src="/img/raccoon-1.jpg" style="width: 250px; height: 250px; object-fit: cover;">
+        <p>Nom : Constantimp</p>
+        <p>Prénom : Crevette</p>
+        <p>Compte créé le : 19/04/2021</p>
+    </div>
+</main>
+<script>
+    document.getElementById("boutonConnexion").addEventListener("click", event => {
+        if (document.getElementById("boutonConnexion").innerHTML === "Se connecter"){
+            document.getElementById("boutonConnexion").innerHTML = "Se déconnecter";
+            document.getElementById("boutonConnexion").classList = "button error";
+            document.getElementById("isConnected").innerHTML = "Connecté";
+            document.getElementById("isConnected").classList = "text-success";
+            document.getElementById("pfp").src = "/img/raccoon-"+Math.floor(Math.random() * 200)+".jpg";
+            document.getElementById("infoCompte").style.display = "block";
+        }
+        else{
+            document.getElementById("boutonConnexion").innerHTML = "Se connecter";
+            document.getElementById("boutonConnexion").classList = "button success";
+            document.getElementById("isConnected").innerHTML = "Déconnecté";
+            document.getElementById("isConnected").classList = "text-error";
+            document.getElementById("infoCompte").style.display = "none";
+        }
+    })
+</script>
+</body>
