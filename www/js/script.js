@@ -1,46 +1,21 @@
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js')
-    .then(() => { console.log("Service Worker Registered"); });
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/sw.js")
+    .then(function() { console.log("Service Worker Registered"); });
 }
 
 setInterval(update, 10000);
 
-let hist = {}
+let hist = {};
 let wss = false;
 let no_data_detect = false; // see if at least one message from websocket has arrived
 let no_data_timeout = 0; // count how many updates have run with no messages from websocket
 let chart_length = 20;
+let uncharted;
 
-// utility functions
+// Définition des fonctions --------------------------
 function getRandomInt(min, max) {
-    if (min > max) {return false}
+    if (min > max) {return false;}
     return Math.floor(Math.random() * (max-min) + min);
-}
-
-function getData() {
-    return {
-        "HotHotHot":"Api v1.0",
-        "capteurs":[
-            {
-                "type":"Thermique",
-                "Nom":"interieur",
-                "Valeur": getRandomInt(-10, 50),
-                "Timestamp": Date.now()
-            },
-            {
-                "type":"Thermique",
-                "Nom":"exterieur",
-                "Valeur": getRandomInt(-10, 50),
-                "Timestamp": Date.now()
-            }
-        ]
-    }
-}
-
-function* entries(obj) {
-    for (let key of Object.keys(obj)) {
-        yield [key, obj[key]];
-    }  
 }
 
 function getRandomColor() {
@@ -65,13 +40,12 @@ function getRandomColor() {
         "#2c3e50",
         "#95a5a6",
         "#7f8c8d"
-    ]
-    return colors[Math.floor(Math.random() * colors.length)]
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
 }
 
 
 function updateTempLabels(data) {
-    
     if (data.Nom == "exterieur") {
         if (data.Valeur > 35){
             document.getElementById("exterieur").getElementsByTagName("h5")[1].style.visibility = "visible";
@@ -119,12 +93,76 @@ function updateTempLabels(data) {
     }
 }
 
+// Definition des classes
+class graph {
+    UnCharted;
 
-// Socket connection
-const socket = new WebSocket('wss://ws.hothothot.dog:9502');
+    constructor() {
+        UnCharted = new Chart(
+            document.getElementById("UnCharted").getContext("2d"), {
+            type: "line",
+            data: {
+                labels: [],
+                datasets: []
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                parsing: {
+                    xAxisKey: "x",
+                    yAxisKey: "y"
+                }
+            }
+        });
+    } // constructor()
+
+    addData(label, x_data, y_data) {
+
+        // Check if we have to add new line for new sensor
+        add_line = true
+        UnCharted.data.datasets.forEach((line) => {
+            if (line.label === label) {
+                add_line = false;
+            }
+        });
+
+        // If line doesent exist create it
+        if (add_line) {
+            UnCharted.data.datasets.push({
+                label: label,
+                data: [],
+                fill: false,
+                borderColor: getRandomColor(), // Get random Color
+                tension: 0.1
+            })
+        }
+
+        // add data to the line
+        UnCharted.data.datasets.forEach((line) => {
+            if (line.label === label) {
+                line.data.push({x: x_data, y: y_data})
+
+                if (line.data.length > chart_length) {
+                    line.data.shift()
+                }
+            }
+        });
+    } // addData()
+
+    update() {
+        UnCharted.update("resize")
+    }
+}
+
+
+// Socket connection ---------------------------
+const socket = new WebSocket("wss://ws.hothothot.dog:9502");
 
 socket.onopen = function (event) {
-    socket.send('Hello HotHotHot, I am hothothot.ozeliurs.com');
+    socket.send("Hello HotHotHot, I am hothothot.ozeliurs.com");
 }
 
 socket.onmessage = function(event) {
@@ -136,40 +174,40 @@ socket.onmessage = function(event) {
 }
 
 // Hide/Visibility Buttons
-document.getElementById("now").addEventListener("click", event => {
-    document.getElementById("now-container").style.display = 'flex';
-    document.getElementById("hist-container").style.display = 'none';
+document.getElementById("now").addEventListener("click", (event) => {
+    document.getElementById("now-container").style.display = "flex";
+    document.getElementById("hist-container").style.display = "none";
     document.getElementById("now").classList = "button primary";
     document.getElementById("hist").classList = "button";
 }); // affNow()
 
-document.getElementById("hist").addEventListener("click", event => {
-    document.getElementById("now-container").style.display = 'none';
-    document.getElementById("hist-container").style.display = 'flex';
+document.getElementById("hist").addEventListener("click", (event) => {
+    document.getElementById("now-container").style.display = "none";
+    document.getElementById("hist-container").style.display = "flex";
     document.getElementById("hist").classList = "button primary";
     document.getElementById("now").classList = "button";
 });
 
-document.getElementById("notif").addEventListener("click", event => {
+document.getElementById("notif").addEventListener("click", (event) => {
 
-    if (!('Notification' in window)) {
-        console.log('Ce navigateur ne prend pas en charge la notification de bureau')
+    if (!("Notification" in window)) {
+        console.log("Ce navigateur ne prend pas en charge la notification de bureau")
     }
-    
-    else if (Notification.permission !== 'denied') {
+
+    else if (Notification.permission !== "denied") {
         Notification.requestPermission()
         .then((permission) => {
-            if (permission === 'granted') {
-                const notification = new Notification('Hothothot', {
-                    body: 'Notifications activées !',
-                    icon: '/icons/webIcon.png'
+            if (permission === "granted") {
+                const notification = new Notification("Hothothot", {
+                    body: "Notifications activées !",
+                    icon: "/icons/webIcon.png"
                 })
             }
         })
     }
 })
 
-document.getElementById("temp-type").addEventListener("click", event => {
+document.getElementById("temp-type").addEventListener("click", (event) => {
     if (document.getElementById("temp-type").innerHTML === "WSS") {
         document.getElementById("temp-type").innerHTML = "FETCH";
         wss = false;
@@ -180,53 +218,35 @@ document.getElementById("temp-type").addEventListener("click", event => {
 })
 
 function notify(message) {
-    if (!('Notification' in window)) { return }
-    
-    if (Notification.permission !== 'granted') { return }
+    if (!("Notification" in window)) { return; }
 
-    new Notification('Hothothot', {
+    if (Notification.permission !== "granted") { return; }
+
+    new Notification("Hothothot", {
         body: message,
-        icon: '/icons/webIcon.png'
-    })
+        icon: "/icons/webIcon.png"
+    });
 }
-
-
-// Chart Config
-const ctx = document.getElementById('UnCharted').getContext('2d');
-const UnCharted = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: [],
-        datasets: []
-    },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true
-            }
-        }
-    }
-});
 
 
 function fetchAPIandUpdate() {
     fetch("https://hothothot.dog/api/capteurs")
-    .then(response => {
+    .then((response) => {
         if (!response.ok) {
             throw new Error(`Request failed with status ${reponse.status}`)
-        }
-        return response.json()
+        };
+        return response.json();
     })
-    .then(data => {
+    .then((data) => {
         updateDisplay(data);
     })
-    .catch(error => console.log(error))
+    .catch((error) => console.log(error));
 }
 
 function updateDisplay(data) {
-    if (data === "") { return }
+    if (data === "") { return; }
 
-    data.capteurs.forEach(capt => {
+    data.capteurs.forEach((capt) => {
 
         // Ajout d'element si pas de element existant
         if (document.getElementById(capt.Nom) == null) {
@@ -239,7 +259,7 @@ function updateDisplay(data) {
                 template = document.getElementById("basic-template")
                 clone = document.importNode(template.content, true)
             }
-            
+
             clone.firstElementChild.setAttribute("id", capt.Nom)
             clone.getElementById("title").innerHTML = capt.Nom;
 
@@ -254,7 +274,7 @@ function updateDisplay(data) {
         hist[capt.Nom].push(capt.Valeur)
 
         localStorage.setItem("hist", JSON.stringify(hist))
-        
+
         // Population des elements
         document.getElementById(capt.Nom).getElementsByTagName("h1")[0].innerHTML = capt.Valeur + "°C";
         document.getElementById(capt.Nom).getElementsByTagName("b")[0].innerHTML = Math.min.apply(Math, hist[capt.Nom]) + "°C";
@@ -263,66 +283,25 @@ function updateDisplay(data) {
         // Add funny notes to the temperatures
         updateTempLabels(capt)
 
-        // Update Chart
-
-        // Add label if missing
-        if (!UnCharted.data.labels.includes(capt.Timestamp)) {
-            UnCharted.data.labels.push(capt.Timestamp)
-            if (UnCharted.data.labels.length > chart_length) {
-                UnCharted.data.labels.shift()
-            }
-        }
-
-        // Check if Add line for new sensor
-        add_line = true
-        UnCharted.data.datasets.forEach(line => {
-            if (line.label === capt.Nom) {
-                add_line = false
-            }
-        });
-
-        // If line doesent exist create it
-        if (add_line) {
-            UnCharted.data.datasets.push({
-                label: capt.Nom,
-                data: [],
-                fill: false,
-                borderColor: getRandomColor(), // Get random Color
-                tension: 0.1
-            })
-        }
-
-        // add data to the line
-        UnCharted.data.datasets.forEach(line => {
-            if (line.label === capt.Nom) {
-                line.data.push(capt.Valeur)
-                console.log(line)
-                if (line.data.length > chart_length) {
-                    line.data.shift()
-                }
-            }
-        });
-        
+        uncharted.addData(capt.Nom, capt.Timestamp, capt.Valeur);
     });
 
-    UnCharted.update('resize')
+    uncharted.update();
 }
 
 function update(event) { // called every 10 seconds checks if wss fails
-
     if (!wss) {fetchAPIandUpdate()}
-    
-    //var data = getData(); // Fake data
-    //updateDisplay(data);
 }
 
-document.addEventListener('DOMContentLoaded', event => {
+document.addEventListener("DOMContentLoaded", (event) => {
     // Get data from localstorage
     local_hist = localStorage.getItem("hist")
     if (local_hist) {
         console.log("Read history from localstorage !")
         hist = JSON.parse(local_hist)
     }
+
+    uncharted = new graph()
 
     update()
 })
