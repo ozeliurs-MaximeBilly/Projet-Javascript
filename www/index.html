@@ -12,11 +12,11 @@
         <link rel="manifest" href="manifest.webmanifest">
     </head>
     <body>
-        <nav class="nav">
+        <nav class="nav" role="menubar">
             <div class="nav-left">
                 <div class="tabs">
-                    <a href="/">Accueil</a>
-                    <a href="/doc.html">Documentation</a>
+                    <a href="/" role="menuitem">Accueil</a>
+                    <a href="/doc.html" role="menuitem">Documentation</a>
                 </div>
             </div>
         </div>
@@ -25,38 +25,38 @@
         </div>
             <div class="nav-right">
                 <a id="temp-type" class="button">FETCH</a>
-                <a id="notif" class="button secondary">Activer les notifications</a>
-                <a href="/espaceCompte.html">Espace utilisateur</a>
+                <a id="notif" class="button secondary" role="menuitem">Activer les notifications</a>
+                <a href="/espaceCompte.html" role="menuitem">Espace utilisateur</a>
         </div>
     </nav>
 
     <main class="container">
 
-        <div class="card margin-m">
-            <a id="now" class="button primary">Maintenant</a>
-            <a id="hist" class="button">Historique</a>
-        </div>
+        <nav class="card margin-m" role="menubar">
+            <a id="now" class="button primary" role="menuitem">Maintenant</a>
+            <a id="hist" class="button" role="menuitem">Historique</a>
+        </nav>
 
-        <div id="now-container" class="card margin-m" style="display: flex;">
-        </div>
+        <section id="now-container" class="card margin-m" style="display: flex;">
+        </section>
 
-        <div id="hist-container" class="card margin-m" style="display: none;">
+        <section id="hist-container" class="card margin-m" style="display: none;">
             <canvas id="UnCharted" width="100" height="40"></canvas>
-        </div>
+        </section>
     </main>
     <template id="temp-template">
         <div class="card margin-m col">
             <h5 id="title"></h5>
             <h5 id="comment"></h5>
-            <h1></h1>
-            <p>Min: <b>30°C</b> Max: <b>100°C</b></p>
+            <h1 aria-live="polite"></h1>
+            <p aria-live="polite">Min: <b>30°C</b> Max: <b>100°C</b></p>
         </div>
     </template>
     <template id="basic-template">
         <div class="card margin-m col">
             <h5 id="title"></h5>
             <h5 id="comment"></h5>
-            <h1></h1>
+            <h1 aria-live="polite"></h1>
         </div>
     </template>
 </body>
