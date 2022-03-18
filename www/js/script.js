@@ -283,7 +283,7 @@ function updateDisplay(data) {
         // Add funny notes to the temperatures
         updateTempLabels(capt)
 
-        uncharted.addData(capt.Nom, capt.Timestamp, capt.Valeur);
+        uncharted.addData(capt.Nom, new Date(capt.Timestamp).toLocaleTimeString(), capt.Valeur);
     });
 
     uncharted.update();
