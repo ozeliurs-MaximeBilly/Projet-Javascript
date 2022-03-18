@@ -151,7 +151,7 @@ class graph {
     } // addData()
 
     update() {
-        this.UnChartedUnCharted.update("resize")
+        this.UnCharted.update("resize")
     }
 
     getChart() {
