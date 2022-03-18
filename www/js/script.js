@@ -95,8 +95,6 @@ function updateTempLabels(data) {
 
 // Definition des classes
 class graph {
-    UnCharted;
-
     constructor() {
         this.UnCharted = new Chart(
             document.getElementById("UnCharted").getContext("2d"), {
