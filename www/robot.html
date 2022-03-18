@@ -15,7 +15,7 @@
             <img id="dog1" src="/img/" style="padding: 15px; border-radius: 5px; width: 100px; height: 100px;">
             <img id="dog2" src="/img/" style="padding: 15px; border-radius: 5px; width: 100px; height: 100px;">
         </div>
-        <a href="#" id="validate">Valider</a>
+        <div style="width: 100%; display: flex; justify-content: flex-end; margin-top: 10px;"><a href="#" id="validate" class="button">Valider</a></div>
     </div>
     <script>
         document.getElementById("dog1").addEventListener("click", event => {
@@ -47,9 +47,10 @@
 
         function validate(event) {
             if (selected === valid){
-                console.log("Valid Choice !!")
                 localStorage.setItem("robot", "true")
                 window.location.replace("/");
+            } else {
+                localStorage.setItem("robot", "false")
             }
         }
     </script>
