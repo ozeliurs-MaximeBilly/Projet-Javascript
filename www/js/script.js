@@ -122,7 +122,7 @@ class graph {
     addData(label, x_data, y_data) {
 
         // Check if we have to add new line for new sensor
-        add_line = true
+        let add_line = true;
         UnCharted.data.datasets.forEach((line) => {
             if (line.label === label) {
                 add_line = false;
