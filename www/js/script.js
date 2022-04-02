@@ -9,7 +9,7 @@ let hist = {};
 let wss = false;
 let no_data_detect = false; // see if at least one message from websocket has arrived
 let no_data_timeout = 0; // count how many updates have run with no messages from websocket
-let chart_length = 20;
+let chart_length = 30;
 let uncharted;
 
 // Définition des fonctions --------------------------
@@ -115,11 +115,25 @@ class graph {
                 }
             }
         });
+
+        this.data = {}
     } // constructor()
 
     addData(label, x_data, y_data) {
+        if (this.data[x_data] == undefined) {
+            this.data[x_data] = {};
+            if (Object.keys(this.data).length >= chart_length) {
+                delete this.data[Object.keys(this.data).sort()[0]]
+            }
+            //this.trim()
+        }
 
-        // Check if we have to add new line for new sensor
+        if (this.data[x_data][label] == undefined) {
+            this.data[x_data][label] = y_data;
+        }
+    } // addData()
+
+    line(label) {
         let add_line = true;
         this.UnCharted.data.datasets.forEach((line) => {
             if (line.label === label) {
@@ -137,26 +151,48 @@ class graph {
                 tension: 0.1
             })
         }
+    } // line()
 
-        // add data to the line
+    setValues(label, lst) {
         this.UnCharted.data.datasets.forEach((line) => {
             if (line.label === label) {
-                line.data.push({x: x_data, y: y_data})
-
-                if (line.data.length > chart_length) {
-                    line.data.shift()
-                }
+                line.data = lst;
             }
         });
-    } // addData()
+    }
 
     update() {
-        this.UnCharted.update("resize")
-    }
+        this.labels = []
+        this.datasets = {}
 
-    getChart() {
-        return this.UnCharted;
-    }
+        // Get all the labels
+        this.UnCharted.data.labels = Object.keys(this.data).sort();
+
+        // Get all the datasets titles
+        this.UnCharted.data.labels.forEach((key) => {
+            Object.keys(this.data[key]).forEach((label) => {
+                if (!Object.keys(this.datasets).includes(label)) {
+                    this.datasets[label] = [];
+                    this.line(label); // add line if missing
+                };
+            });
+        });
+
+        // Get all the datasets data
+        this.UnCharted.data.labels.forEach((key) => {
+            Object.keys(this.data[key]).forEach((label) => {
+                if (this.data[key][label] != undefined) {
+                    this.datasets[label].push(this.data[key][label])
+                } else {
+                    this.datasets[label].push(0)
+                }
+                this.setValues(label, this.datasets[label])
+            });
+        });
+
+        //this.UnCharted.update();
+        this.UnCharted.update("resize")
+    } // update()
 }
 
 
@@ -285,7 +321,7 @@ function updateDisplay(data) {
         // Add funny notes to the temperatures
         updateTempLabels(capt)
 
-        uncharted.addData(capt.Nom, new Date(capt.Timestamp).toLocaleTimeString(), capt.Valeur);
+        uncharted.addData(capt.Nom, (capt.Timestamp).toString(), capt.Valeur);
     });
 
     uncharted.update();
