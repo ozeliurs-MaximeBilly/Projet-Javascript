@@ -39,18 +39,34 @@
     <div class="card" id="infoCompte" style="display: none;">
         <h4 class="text-success">Information du compte : </h4>
         <img id="pfp" class="is-rounded" src="/img/raccoon-1.jpg" style="width: 250px; height: 250px; object-fit: cover;">
-        <p>Nom : Constantimp</p>
-        <p>Prénom : Crevette</p>
+        <p>Nom : <span id="name"></span></p>
+        <p>Prénom : <span id="surname"></span></p>
         <p>Compte créé le : 19/04/2021</p>
     </div>
 </main>
 <script>
+    data = [
+        ["Hervé", "Lociraptor"],
+        ["Olivier", "Tnam"],
+        ["Terry", "Dicule"],
+        ["Tara", "Des Gouts"],
+        ["Elsa", "Rose"],
+        ["Jean", "Profite"],
+        ["Paul", "Ochon"],
+        ["Monique", "Talope"],
+        ["Jean", "Tube"],
+        ["Edith", "Moitou"]
+    ]
+
     document.getElementById("boutonConnexion").addEventListener("click", event => {
         if (document.getElementById("boutonConnexion").innerHTML === "Se connecter"){
             document.getElementById("boutonConnexion").innerHTML = "Se déconnecter";
             document.getElementById("boutonConnexion").classList = "button error";
             document.getElementById("isConnected").innerHTML = "Connecté";
             document.getElementById("isConnected").classList = "text-success";
+            rand = Math.floor(Math.random() * 9);
+            document.getElementById("name").innerHTML = data[rand][1];
+            document.getElementById("surname").innerHTML = data[rand][0];
             document.getElementById("pfp").src = "/img/raccoon-"+Math.floor(Math.random() * 200)+".jpg";
             document.getElementById("infoCompte").style.display = "block";
         }
