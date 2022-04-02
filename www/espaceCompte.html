@@ -45,28 +45,25 @@
     </div>
 </main>
 <script>
-    data = [
-        ["Hervé", "Lociraptor"],
-        ["Olivier", "Tnam"],
-        ["Terry", "Dicule"],
-        ["Tara", "Des Gouts"],
-        ["Elsa", "Rose"],
-        ["Jean", "Profite"],
-        ["Paul", "Ochon"],
-        ["Monique", "Talope"],
-        ["Jean", "Tube"],
-        ["Edith", "Moitou"]
-    ]
-
     document.getElementById("boutonConnexion").addEventListener("click", event => {
         if (document.getElementById("boutonConnexion").innerHTML === "Se connecter"){
             document.getElementById("boutonConnexion").innerHTML = "Se déconnecter";
             document.getElementById("boutonConnexion").classList = "button error";
             document.getElementById("isConnected").innerHTML = "Connecté";
             document.getElementById("isConnected").classList = "text-success";
+            fetch("https://api.ozeliurs.com/fake")
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`Request failed with status ${reponse.status}`)
+                };
+                return response.json();
+            })
+            .then((data) => {
+                document.getElementById("name").innerHTML = data.name;
+                document.getElementById("surname").innerHTML = data.surname;
+            })
+            .catch((error) => console.log(error));
             rand = Math.floor(Math.random() * 9);
-            document.getElementById("name").innerHTML = data[rand][1];
-            document.getElementById("surname").innerHTML = data[rand][0];
             document.getElementById("pfp").src = "/img/raccoon-"+Math.floor(Math.random() * 200)+".jpg";
             document.getElementById("infoCompte").style.display = "block";
         }
