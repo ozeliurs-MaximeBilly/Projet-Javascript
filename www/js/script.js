@@ -162,10 +162,15 @@ class graph {
         this.datasets = {}
 
         // Get all the labels
-        this.UnCharted.data.labels = Object.keys(this.data).sort();
+        this.UnCharted.data.labels = []
+        Object.keys(this.data).sort().forEach((x_data) => {
+                this.UnCharted.data.labels.push(new Date(x_data * 1000).toLocaleTimeString())
+            }
+        )
+        this.x_values = Object.keys(this.data).sort();
 
         // Get all the datasets titles
-        this.UnCharted.data.labels.forEach((key) => {
+        this.x_values.forEach((key) => {
             Object.keys(this.data[key]).forEach((label) => {
                 if (!Object.keys(this.datasets).includes(label)) {
                     this.datasets[label] = [];
@@ -175,7 +180,7 @@ class graph {
         });
 
         // Get all the datasets data
-        this.UnCharted.data.labels.forEach((key) => {
+        this.x_values.forEach((key) => {
             Object.keys(this.data[key]).forEach((label) => {
                 if (this.data[key][label] != undefined) {
                     this.datasets[label].push(this.data[key][label])
