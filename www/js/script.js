@@ -212,7 +212,7 @@ socket.onmessage = function(event) {
 }
 
 
-// Hide/Visibility Buttons
+// Hide/Visibility Buttons --------------------------------------------
 document.getElementById("now").addEventListener("click", (event) => {
     document.getElementById("now-container").style.display = "flex";
     document.getElementById("hist-container").style.display = "none";

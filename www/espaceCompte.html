@@ -66,10 +66,9 @@
             .then((data) => {
                 document.getElementById("name").innerHTML = data.name;
                 document.getElementById("surname").innerHTML = data.surname;
+                document.getElementById("pfp").src = data.profile_picture;
             })
             .catch((error) => console.log(error));
-            rand = Math.floor(Math.random() * 9);
-            document.getElementById("pfp").src = "/img/raccoon-"+Math.floor(Math.random() * 200)+".jpg";
             document.getElementById("infoCompte").style.display = "block";
         }
         else{
