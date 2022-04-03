@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Projet JS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HotHotHot</title>
+    <link rel="icon" type="image/png" href="/icons/webIcon.png">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="manifest" href="manifest.webmanifest">
     <script>
         var tid = setInterval(update, 100);
         var run = false;
@@ -43,18 +46,19 @@
     </script>
 </head>
 <body>
-<nav class="nav">
-    <div class="nav-left">
-        <div class="tabs">
-            <a href="/">Accueil</a>
-            <a class="active" href="/doc.html">Documentation</a>
+    <nav class="nav" role="menubar">
+        <div class="nav-left">
+            <div class="tabs">
+                <a href="/" role="menuitem">Accueil</a>
+                <a href="/doc.html" role="menuitem">Documentation</a>
+            </div>
         </div>
     </div>
     <div class="nav-center">
         <a href="/" class="brand">🥵 HotHotHot 🥶</a>
     </div>
-    <div class="nav-right">
-            <a href="/espaceCompte.html">Espace utilisateur</a>
+        <div class="nav-right">
+            <a href="/espaceCompte.html" role="menuitem" class="button primary">Espace utilisateur</a>
     </div>
 </nav>
 
