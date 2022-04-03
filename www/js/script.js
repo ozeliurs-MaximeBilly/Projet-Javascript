@@ -3,20 +3,15 @@ if ("serviceWorker" in navigator) {
     .then(function() { console.log("Service Worker Registered"); });
 }
 
+
 setInterval(update, 10000);
+
 
 let hist = {};
 let wss = false;
-let no_data_detect = false; // see if at least one message from websocket has arrived
-let no_data_timeout = 0; // count how many updates have run with no messages from websocket
 let chart_length = 30;
 let uncharted;
 
-// Définition des fonctions --------------------------
-function getRandomInt(min, max) {
-    if (min > max) {return false;}
-    return Math.floor(Math.random() * (max-min) + min);
-}
 
 function getRandomColor() {
     colors = [
@@ -92,6 +87,7 @@ function updateTempLabels(data) {
         }
     }
 }
+
 
 // Definition des classes
 class graph {
@@ -199,17 +195,17 @@ class graph {
 // Socket connection ---------------------------
 const socket = new WebSocket("wss://ws.hothothot.dog:9502");
 
+
 socket.onopen = function (event) {
     socket.send("Hello HotHotHot, I am hothothot.ozeliurs.com");
 }
 
+
 socket.onmessage = function(event) {
-    if (wss){
-        updateDisplay(event.data)
-        no_data_detect = true
-        console.log(event.data)
-    }
+    wss = true;
+    updateDisplay(event.data);
 }
+
 
 // Hide/Visibility Buttons
 document.getElementById("now").addEventListener("click", (event) => {
@@ -245,15 +241,6 @@ document.getElementById("notif").addEventListener("click", (event) => {
     }
 })
 
-document.getElementById("temp-type").addEventListener("click", (event) => {
-    if (document.getElementById("temp-type").innerHTML === "WSS") {
-        document.getElementById("temp-type").innerHTML = "FETCH";
-        wss = false;
-    } else {
-        document.getElementById("temp-type").innerHTML = "WSS";
-        wss = true;
-    }
-})
 
 function notify(message) {
     if (!("Notification" in window)) { return; }
@@ -280,6 +267,7 @@ function fetchAPIandUpdate() {
     })
     .catch((error) => console.log(error));
 }
+
 
 function updateDisplay(data) {
     if (data === "") { return; }
@@ -327,9 +315,11 @@ function updateDisplay(data) {
     uncharted.update();
 }
 
+
 function update(event) { // called every 10 seconds checks if wss fails
     if (!wss) {fetchAPIandUpdate()}
 }
+
 
 document.addEventListener("DOMContentLoaded", (event) => {
     // Get data from localstorage
@@ -340,6 +330,5 @@ document.addEventListener("DOMContentLoaded", (event) => {
     }
 
     uncharted = new graph()
-
     update()
 })
