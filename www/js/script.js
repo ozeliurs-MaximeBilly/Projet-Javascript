@@ -13,6 +13,13 @@ let chart_length = 30;
 let uncharted;
 
 
+function isFloat(value) {
+    return !isNaN(value) && 
+           parseFloat(value) == value && 
+           !isNaN(parseFloat(value));
+  }
+
+
 function getRandomColor() {
     colors = [
         "#1abc9c",
@@ -302,7 +309,9 @@ function updateDisplay(data) {
         if (hist[capt.Nom] == undefined) {
             hist[capt.Nom] = []
         }
-        hist[capt.Nom].push(capt.Valeur)
+        if (isFloat(capt.Valeur)) {
+            hist[capt.Nom].push(capt.Valeur)
+        }
 
         localStorage.setItem("hist", JSON.stringify(hist))
 
