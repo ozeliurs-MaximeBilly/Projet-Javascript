@@ -327,6 +327,11 @@ function updateDisplay(data) {
     });
 
     uncharted.update();
+
+    uncharted.UnCharted.data.datasets.forEach((dataset) => {
+        
+        document.getElementById(dataset.label).style.backgroundColor = dataset.borderColor+"50";
+    });
 }
 
 
